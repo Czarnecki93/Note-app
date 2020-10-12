@@ -15,15 +15,27 @@ const add_note = (note, id) => {
     list.innerHTML += html;
 }
 
+const delete_note = (id) => {
+    const notes = document.querySelectorAll('li');
+    notes.forEach(note => {
+        if (note.getAttribute('data-id') === id) {
+            note.remove();
+        }
+    })
+}
+
 // Get the notes
-db.collection('notes').get().then((snapshot) => {
-    // What to do, when we have the notes. 
-    snapshot.docs.forEach(doc => {
-        add_note(doc.data(), doc.id);
+db.collection('notes').onSnapshot(snapshot => {
+    snapshot.docChanges().forEach(change => {
+        const doc = change.doc;
+        if (change.type === 'added') {
+            add_note(doc.data(), doc.id);
+        } else if (change.type === 'removed') {
+            delete_note(doc.id);
+        }
     });
-}).catch((err) => {
-    console.log(err);
 });
+
 
 // Add notes
 form.addEventListener('submit', e => {
@@ -37,7 +49,7 @@ form.addEventListener('submit', e => {
     };
 
     db.collection('notes').add(note).then(() => {
-        console.log("Note added")
+        console.log("Note added.")
     }).catch(err => {
         console.log(err);
     });
