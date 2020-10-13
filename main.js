@@ -8,7 +8,9 @@ const add_note = (note, id) => {
             <div>${note.Note}</div>
             <div>Created: ${note.Created.toDate().toLocaleString()}</div>
             <div>Last modified: ${note.Modified.toDate().toLocaleString()}</div>
-            <button class="btn btn-danger btn-sm my-2">Delete</button>
+            <div>Important: <input type="checkbox" id="important-check"></div>
+            <button class="btn btn-danger btn-sm my-2" id="delete">Delete</button>
+            <button class="btn btn-warning btn-sm my-2" id="edit">Edit</button>
         </li>
     `;
 
@@ -47,6 +49,8 @@ form.addEventListener('submit', e => {
         Created: firebase.firestore.Timestamp.fromDate(now),
         Modified: firebase.firestore.Timestamp.fromDate(now)
     };
+    form.reset();
+
 
     db.collection('notes').add(note).then(() => {
         console.log("Note added.")
@@ -55,9 +59,22 @@ form.addEventListener('submit', e => {
     });
 });
 
-// Deleting data
+// Update notes
 list.addEventListener('click', e => {
-    if (e.target.tagName == "BUTTON") {
+    if (e.target.id == "edit") {
+        console.log(e);
+        const id = e.target.parentElement.getAttribute('data-id');
+        db.collection('notes').doc(id).update(note_title).then(() => {
+            console.log("Note deleted.")
+        });
+
+    }
+});
+
+// Deleting notes
+list.addEventListener('click', e => {
+    if (e.target.id == "delete") {
+        console.log(e);
         const id = e.target.parentElement.getAttribute('data-id');
         db.collection('notes').doc(id).delete().then(() => {
             console.log("Note deleted.")
