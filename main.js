@@ -8,7 +8,7 @@ const add_note = (note, id) => {
             <div>${note.Note}</div>
             <div>Created: ${note.Created.toDate().toLocaleString()}</div>
             <div>Last modified: ${note.Modified.toDate().toLocaleString()}</div>
-            <div>Important: <input type="checkbox" id="important-check"></div>
+            <div>Important: <input type="checkbox" id="importantCheck"></div>
             <button class="btn btn-danger btn-sm my-2" id="delete">Delete</button>
             <button class="btn btn-warning btn-sm my-2" id="edit">Edit</button>
         </li>
@@ -47,7 +47,7 @@ form.addEventListener('submit', e => {
         Title: form.note_title.value,
         Note: form.note.value,
         Created: firebase.firestore.Timestamp.fromDate(now),
-        Modified: firebase.firestore.Timestamp.fromDate(now)
+        Modified: firebase.firestore.Timestamp.fromDate(now),
     };
     form.reset();
 
